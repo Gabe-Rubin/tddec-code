@@ -28,19 +28,22 @@ extern "C"
 //START: testGroup
 TEST_GROUP(sprintf)
 {
-    char output[100];
+    char * output = nullptr;
     const char * expected;
     void setup()
     {
-        memset(output, 0xaa, sizeof output);
         expected = "";
     }
     void teardown()
     {
+        free(output);
     }
     void expect(const char * s)
     {
         expected = s;
+        size_t slen = strlen(s) + 2;
+        output = (char *)malloc(slen);
+        memset(output, 0xaa, slen);
     }
     void given(int charsWritten)
     {
