@@ -63,6 +63,20 @@ TEST(sprintf, InsertString)
     expect("Hello World\n");
     given(sprintf(output, "Hello %s\n", "World"));
 }
+
+// Begin Gabe's Tests for Chapter 2, Exercise 4:
+
+TEST(sprintf, InsertPositiveSignedDecimalInt)
+{
+    expect("42");
+    given(sprintf(output, "%i", 42));
+}
+
+TEST(sprintf, InsertNegativeSignedDecimalInt)
+{
+    expect("-10");
+    given(sprintf(output, "%i", -10));
+}
 //END: RefactoredTests
 
 #else //START: Duplication
