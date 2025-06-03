@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "io.h": "c"
+    },
+    "emeraldwalk.runonsave": {
+        "message": "**** Run on Save Start ****",
+        "messageAfter": "**** Run on Save Complete ****",
+        "autoClearConsole": true,
+        "showElapsed": true,
+        "commands": [
+            {
+                "message": "**** Gabe Tests Running ****",
+                "messageAfter": "**** Gabe Tests Complete ****",
+                "showElapsed": true,
+                "match": "((Makefile)|\\.(c|cpp|h|hpp|mk))",
+                "autoShowOutputPanel": "always",
+                "cmd": "make gabeTests"
+            }
+        ]
+    }
+}
