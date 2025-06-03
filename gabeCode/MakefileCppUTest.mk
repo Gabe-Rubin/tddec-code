@@ -13,22 +13,27 @@ PROJECT_HOME_DIR = .
 
 SRC_DIRS = \
 	src/LedDriver \
+	../code/src/IO \
+	../code/src/util \
 
 TEST_SRC_DIRS = \
 	.\
-	mocks\
 	tests/LedDriver\
 	tests\
+	../code/mocks\
 
 	
 INCLUDE_DIRS =\
   .\
-  $(CPPUTEST_HOME)/include\
-  mocks\
   include/LedDriver\
+  $(CPPUTEST_HOME)/include\
+  include/IO\
+  ../code/mocks\
+  ../code/include/util \
+  ../code/include/IO \
 
 MOCKS_SRC_DIRS = \
-	mocks\
+	../code/mocks\
 
 include ../CppUTestCompileFlags.mk
 
