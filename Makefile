@@ -7,6 +7,10 @@ all: cpputest
 	make -i -C code-t2
 	make -i -C code-t3
 
+gabeTests: cpputest
+	@echo CPPUTEST_HOME is $(CPPUTEST_HOME)
+	make -i -C gabeCode
+
 clean:
 	make -i -C cpputest clean
 	make -i -C code clean
