@@ -13,12 +13,14 @@ PROJECT_HOME_DIR = .
 
 SRC_DIRS = \
 	src/LedDriver \
+	src/CircularBuffer\
 	../code/src/IO \
 	../code/src/util \
 
 TEST_SRC_DIRS = \
 	.\
 	tests/LedDriver\
+	tests/CircularBuffer\
 	tests\
 	../code/mocks\
 
@@ -26,6 +28,7 @@ TEST_SRC_DIRS = \
 INCLUDE_DIRS =\
   .\
   include/LedDriver\
+  include/CircularBuffer\
   $(CPPUTEST_HOME)/include\
   include/IO\
   ../code/mocks\
