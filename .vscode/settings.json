@@ -1,6 +1,8 @@
 {
     "files.associations": {
-        "io.h": "c"
+        "io.h": "c",
+        "leddriver.h": "c",
+        "cstdint": "cpp"
     },
     "emeraldwalk.runonsave": {
         "message": "**** Run on Save Start ****",
