@@ -11,9 +11,7 @@ class CircularBuffer
   {
   public:
     explicit CircularBuffer();
-    virtual ~CircularBuffer();
-
-  private:
+    ~CircularBuffer();
 
     CircularBuffer(const CircularBuffer&);
     CircularBuffer& operator=(const CircularBuffer&);
