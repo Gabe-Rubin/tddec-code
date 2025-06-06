@@ -1,7 +1,8 @@
+#ifndef D_LedDriver_H
+#define D_LedDriver_H
+
 // LED Driver written to follow along with TDDEC.
 // Written by Gabriel Rubin (06/03/2025).
-
-#pragma once
 
 #include <cstdint>
 
@@ -12,9 +13,20 @@ class LedDriver
         LedDriver(uint16_t * const address);
         ~LedDriver();
 
-        void turnOn(const uint16_t ledNum);
-        void turnOff(const uint16_t ledNum);
+        void turnOn(const int ledNum);
+        void turnOff(const int ledNum);
+
+        void turnAllOn();
+        void turnAllOff();
+        
+        bool isOn(const int ledNum);
+        bool isOff(const int ledNum);
 
     private:
-    uint16_t * const _ledsAddress = nullptr;
+        void updateHardware();
+
+        uint16_t * const _ledsAddress = nullptr;
+        uint16_t _ledsImage = 0;
 };
+
+#endif // D_LedDriver_H
