@@ -37,7 +37,7 @@ TEST(LedDriver, LedsOffAfterCreate)
 TEST(LedDriver, TurnOnLedOne)
 {
     ledDriver0->turnOn(0x0001);
-    LONGS_EQUAL(0x0001, virtualLeds);
+    LONGS_EQUAL(0x8000, virtualLeds);
 }
 
 // TEST(LedDriver, TurnOnLedTwo)
@@ -79,7 +79,7 @@ TEST(LedDriver, TurnOffAnyLed)
 {
     ledDriver0->turnAllOn();
     ledDriver0->turnOff(8);
-    LONGS_EQUAL(0xff7f, virtualLeds);
+    LONGS_EQUAL(0xfeff, virtualLeds);
 }
 
 TEST(LedDriver, AllOn)
@@ -99,7 +99,7 @@ TEST(LedDriver, LedMemoryIsNotReadable)
 {
     virtualLeds = 0xffff;
     ledDriver0->turnOn(8);
-    LONGS_EQUAL(0x0080, virtualLeds);
+    LONGS_EQUAL(0x0100, virtualLeds);
 }
 
 TEST(LedDriver, UpperAndLowerBounds)
@@ -166,4 +166,96 @@ TEST(LedDriver, IsOff)
     CHECK_TRUE(ledDriver0->isOff(9));
     ledDriver0->turnOn(9);
     CHECK_FALSE(ledDriver0->isOff(9));
+}
+
+TEST(LedDriver, isLogicInverted)
+{
+    CHECK_FALSE(ledDriver0->isLogicInverted());
+}
+
+TEST(LedDriver, setLogicInverted)
+{
+    CHECK_FALSE(ledDriver0->isLogicInverted());
+    LONGS_EQUAL(0x0000, virtualLeds);
+    ledDriver0->setLogicInverted(true);
+    CHECK_TRUE(ledDriver0->isLogicInverted());
+    LONGS_EQUAL(0xffff, virtualLeds);
+}
+
+TEST(LedDriver, InvertedBitsOffAtStart)
+{
+    LedDriver ledDriver0(&virtualLeds, true);
+    LONGS_EQUAL(0xffff, virtualLeds);
+}
+
+TEST(LedDriver, InvertingLogicInvertsBits)
+{
+    ledDriver0->turnOn(1);
+    ledDriver0->turnOn(14);
+    LONGS_EQUAL(0x8004, virtualLeds);
+    ledDriver0->setLogicInverted(true);
+    LONGS_EQUAL(0x7ffb, virtualLeds);
+}
+
+TEST(LedDriver, InvertedAllOn)
+{
+    ledDriver0->setLogicInverted(true);
+    ledDriver0->turnAllOn();
+    LONGS_EQUAL(0x0000, virtualLeds);
+}
+
+TEST(LedDriver, InvertedAllOff)
+{
+    ledDriver0->setLogicInverted(true);
+    ledDriver0->turnAllOn();
+    ledDriver0->turnAllOff();
+    LONGS_EQUAL(0xffff, virtualLeds);
+}
+
+TEST(LedDriver, InvertedOneOn)
+{
+    ledDriver0->setLogicInverted(true);
+    ledDriver0->turnOn(16);
+    LONGS_EQUAL(0xfffe, virtualLeds);
+}
+
+IGNORE_TEST(LedDriver, InvertedOneOff)
+{
+    ledDriver0->setLogicInverted(true);
+    ledDriver0->turnAllOn();
+    ledDriver0->turnOff(8);
+    LONGS_EQUAL(0x0100, virtualLeds);
+}
+
+TEST(LedDriver, InvertedManyOn)
+{
+    ledDriver0->setLogicInverted(true);
+    ledDriver0->turnOn(1);
+    ledDriver0->turnOn(8);
+    LONGS_EQUAL(0x7eff, virtualLeds);
+}
+
+TEST(LedDriver, InvertedManyOff)
+{
+    ledDriver0->setLogicInverted(true);
+    ledDriver0->turnAllOn();
+    ledDriver0->turnOff(10);
+    ledDriver0->turnOff(16);
+    LONGS_EQUAL(0x0041, virtualLeds);
+}
+
+TEST(LedDriver, InvertedIsOn)
+{
+    ledDriver0->setLogicInverted(true);
+    CHECK_FALSE(ledDriver0->isOn(7));
+    ledDriver0->turnOn(7);
+    CHECK_TRUE(ledDriver0->isOn(7));
+}
+
+TEST(LedDriver, InvertedIsOff)
+{
+    ledDriver0->setLogicInverted(true);
+    CHECK_TRUE(ledDriver0->isOff(6));
+    ledDriver0->turnOn(6);
+    CHECK_FALSE(ledDriver0->isOff(6));
 }

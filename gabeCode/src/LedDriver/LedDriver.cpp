@@ -13,21 +13,21 @@ enum {
 };
 
 enum {
-    FIRST_LED = 1,
-    LAST_LED = 16
+    LAST_LED = 1,
+    FIRST_LED = 16
 };
 
 namespace // LedDriverHelpers
 {
     inline const uint16_t convertLedNumberToBitPosition(const int ledNum)
     {
-        return (1 << (ledNum - 1));
+        return (0x8000 >> (ledNum - 1));
     }
 
     bool isLedInBounds(const int ledNum)
     {
         bool isInBounds = false;
-        if(ledNum >= FIRST_LED && ledNum <= LAST_LED)
+        if(ledNum >= LAST_LED && ledNum <= FIRST_LED)
         {
             isInBounds = true;
         }
@@ -47,11 +47,16 @@ namespace // LedDriverHelpers
     {
         image &= ~convertLedNumberToBitPosition(ledNum);
     }
+
+    void invertBits(uint16_t &image)
+    {
+        image = (uint16_t)(~image);
+    }
 }
 
-LedDriver::LedDriver(uint16_t * const address) : _ledsAddress(address)
+LedDriver::LedDriver(uint16_t * const address, bool invertedLogic) : _ledsAddress(address), _invertedLogic{invertedLogic}
 {
-    this->_ledsImage = ALL_LEDS_OFF;
+    this->turnAllOff();
     updateHardware();
 }
 
@@ -63,7 +68,14 @@ void LedDriver::turnOn(const int ledNum)
 {
     if(isLedInBounds(ledNum))
     {
-        setLedImageBit(ledNum, this->_ledsImage);
+        if(this->_invertedLogic)
+        {
+            clearLedImageBit(ledNum, this->_ledsImage);
+        }
+        else
+        {
+            setLedImageBit(ledNum, this->_ledsImage);
+        }
         updateHardware();
     }
 }
@@ -72,7 +84,14 @@ void LedDriver::turnOff(const int ledNum)
 {
     if(isLedInBounds(ledNum))
     {
-        clearLedImageBit(ledNum, this->_ledsImage);
+        if(this->_invertedLogic)
+        {
+            setLedImageBit(ledNum, this->_ledsImage);
+        }
+        else
+        {
+            clearLedImageBit(ledNum, this->_ledsImage);
+        }
         updateHardware();
     }
 }
@@ -80,12 +99,20 @@ void LedDriver::turnOff(const int ledNum)
 void LedDriver::turnAllOn()
 {
     this->_ledsImage = ALL_LEDS_ON;
+    if(this->_invertedLogic)
+    {
+        invertBits(this->_ledsImage);
+    }
     updateHardware();
 }
 
 void LedDriver::turnAllOff()
 {
     this->_ledsImage = ALL_LEDS_OFF;
+    if(this->_invertedLogic)
+    {
+        invertBits(this->_ledsImage);
+    }
     updateHardware();
 }
 
@@ -94,17 +121,33 @@ void LedDriver::updateHardware()
     *(this->_ledsAddress) = this->_ledsImage;
 }
 
-bool LedDriver::isOn(const int ledNum)
+bool LedDriver::isOn(const int ledNum) const
 {
     bool on = false;
-    if (isLedInBounds(ledNum))
+    if(isLedInBounds(ledNum))
     {
         on = this->_ledsImage & convertLedNumberToBitPosition(ledNum);
+        if(this->_invertedLogic)
+        {
+            on = !on;
+        }
     }
     return on;
 }
 
-bool LedDriver::isOff(const int ledNum)
+bool LedDriver::isOff(const int ledNum) const
 {
     return !this->isOn(ledNum);
+}
+
+bool LedDriver::isLogicInverted() const
+{
+    return this->_invertedLogic;
+}
+
+void LedDriver::setLogicInverted(const bool inverted)
+{
+    this->_invertedLogic = inverted;
+    this->_ledsImage = ~this->_ledsImage;
+    this->updateHardware();
 }
